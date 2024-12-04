@@ -189,6 +189,8 @@ class TrainingSettings:
 
     lowest_quant_level: int = DefaultVal(2)
 
+    query_pad_tok: str = DefaultVal('pad')
+
 
 @dataclass
 class IndexingSettings:

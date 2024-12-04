@@ -82,7 +82,8 @@ class QueryTokenizer():
         unpadded_sizes = (ids != self.pad_token_id).sum(dim=1)
         # Log original sizes
         original_sizes = unpadded_sizes.clone()
-        ids[ids == self.pad_token_id] = self.mask_token_id
+        if self.config.query_pad_tok == "mask":
+            ids[ids == self.pad_token_id] = self.mask_token_id
 
         # Shorten ids and mask if necessary
         if self.config.cap_padding > 0:
@@ -120,6 +121,7 @@ class QueryTokenizer():
             batches = _split_into_batches(ids, mask, bsize)
             return batches
         
+        self.used = True
         if self.used is False:
             self.used = True
 
