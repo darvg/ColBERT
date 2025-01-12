@@ -52,7 +52,7 @@ class DocTokenizer():
         batch_text = ['. ' + x for x in batch_text]
 
         obj = self.tok(batch_text, padding='longest', truncation='longest_first',
-                       return_tensors='pt', max_length=self.doc_maxlen).to(DEVICE)
+                       return_tensors='pt', max_length=self.doc_maxlen).to(self.config.rank)
 
         ids, mask = obj['input_ids'], obj['attention_mask']
 

@@ -62,7 +62,7 @@ class QueryTokenizer():
 
         if full_length_search:
             # Tokenize each string in the batch
-            un_truncated_ids = self.tok(batch_text, add_special_tokens=False).to(DEVICE)['input_ids']
+            un_truncated_ids = self.tok(batch_text, add_special_tokens=False).to(self.config.rank)['input_ids']
             # Get the longest length in the batch
             max_length_in_batch = max(len(x) for x in un_truncated_ids)
             # Set the max length
@@ -72,7 +72,7 @@ class QueryTokenizer():
             max_length = self.query_maxlen
 
         obj = self.tok(batch_text, padding='max_length', truncation=True,
-                       return_tensors='pt', max_length=max_length).to(DEVICE)
+                       return_tensors='pt', max_length=max_length).to(self.config.rank)
 
         ids, mask = obj['input_ids'], obj['attention_mask']
 
@@ -106,7 +106,7 @@ class QueryTokenizer():
             assert len(context) == len(batch_text), (len(context), len(batch_text))
 
             obj_2 = self.tok(context, padding='longest', truncation=True,
-                            return_tensors='pt', max_length=self.background_maxlen).to(DEVICE)
+                            return_tensors='pt', max_length=self.background_maxlen).to(self.config.rank)
 
             ids_2, mask_2 = obj_2['input_ids'][:, 1:], obj_2['attention_mask'][:, 1:]  # Skip the first [SEP]
 
