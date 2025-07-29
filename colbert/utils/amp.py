@@ -1,18 +1,22 @@
 import torch
+import contextlib
 
-from contextlib import contextmanager
 from colbert.utils.utils import NullContextManager
 
 
 class MixedPrecisionManager():
-    def __init__(self, activated):
+    def __init__(self, activated: bool):
         self.activated = activated
-
         if self.activated:
-            self.scaler = torch.cuda.amp.GradScaler()
+            # CHANGE: GradScaler is now imported from torch.amp
+            self.scaler = torch.GradScaler()
 
     def context(self):
-        return torch.cuda.amp.autocast() if self.activated else NullContextManager()
+        # CHANGE: Use torch.amp.autocast and specify the device_type
+        if self.activated:
+            return torch.autocast(device_type='cuda')
+        else:
+            return contextlib.nullcontext()
 
     def backward(self, loss):
         if self.activated:
@@ -35,5 +39,3 @@ class MixedPrecisionManager():
         
         if scheduler is not None:
             scheduler.step()
-
-        optimizer.zero_grad()

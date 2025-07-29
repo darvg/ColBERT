@@ -141,7 +141,7 @@ class QueryTokenizer():
         return min(500, max(self.query_maxlen, length))
 
 
-import torch
+# import torch
 # import math
 
 # from colbert.modeling.hf_colbert import class_factory
